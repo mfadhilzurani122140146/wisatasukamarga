@@ -104,7 +104,12 @@ export default function WisataEditForm({
             );
           }
           const blob = await response.blob();
-          const file = new File([blob], "cover.jpg", { type: blob.type });
+          const file = Object.assign(
+            new File([blob], "cover.jpg", { type: blob.type }),
+            {
+              preview: initialData.imageCover,
+            }
+          );
           setImageCoverFile(file);
           form.setValue("imageCover", [file]);
         }
@@ -120,7 +125,12 @@ export default function WisataEditForm({
               }
               const blob = await response.blob();
               const fileName = `image-${index + 1}.jpg`;
-              return new File([blob], fileName, { type: blob.type });
+              return Object.assign(
+                new File([blob], fileName, { type: blob.type }),
+                {
+                  preview: imageUrl,
+                }
+              );
             })
           );
           setImageFiles(convertedFiles);
@@ -201,7 +211,6 @@ export default function WisataEditForm({
       setLoading(false);
     }
   }
-
 
   return (
     <Card className="mx-auto w-full">
