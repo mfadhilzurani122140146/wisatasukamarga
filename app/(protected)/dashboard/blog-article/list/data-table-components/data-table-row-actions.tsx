@@ -52,7 +52,6 @@ export function DataTableRowActions<TData extends BlogData>({
         alert("Blog deleted successfully.");
         // Optionally, trigger a re-fetch of the data here
       } catch (error) {
-        console.error("Error deleting blog:", error);
         alert("An error occurred while deleting the blog.");
       }
     }

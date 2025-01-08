@@ -15,13 +15,11 @@ export default function WisataEditPage() {
       try {
         const response = await fetch(`/api/wisata?id=${id}`);
         if (!response.ok) {
-          console.error("Failed to fetch wisata data");
           return;
         }
         const data = await response.json();
         setInitialData(data);
       } catch (error) {
-        console.error("Error fetching wisata data:", error);
       } finally {
         setLoading(false);
       }
@@ -32,20 +30,13 @@ export default function WisataEditPage() {
     }
   }, [id]);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!initialData) {
-    return <p>Wisata not found or failed to fetch wisata data.</p>;
-  }
 
   return (
     <div>
       <FasilitasForm
         initialData={initialData}
         wisataOptions={[]}
-        pageTitle="Create Wisata Facility"
+        pageTitle="Tambah Daya Tarik"
       />
     </div>
   );

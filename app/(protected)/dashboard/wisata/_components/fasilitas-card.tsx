@@ -99,7 +99,6 @@ export default function FasilitasCard({
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Failed to submit fasilitas wisata:", errorData);
         alert(errorData.error || "Failed to submit fasilitas wisata.");
         return;
       }
@@ -109,7 +108,6 @@ export default function FasilitasCard({
       alert("Fasilitas wisata created successfully!");
       form.reset();
     } catch (error) {
-      console.error("Error submitting fasilitas wisata:", error);
       alert("An error occurred while submitting the fasilitas wisata.");
     } finally {
       setLoading(false);

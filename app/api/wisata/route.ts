@@ -11,13 +11,23 @@ cloudinary.config({
 });
 
 // Handle all HTTP methods
-export async function GET(req : NextRequest) {
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
+  const name = searchParams.get("name");
   const id = searchParams.get("id");
+  const page = searchParams.get("page");
+  const pageSize: any = searchParams.get("pageSize");
+  const search = searchParams.get("search");
+
+  let wisatas = await prisma.wisata.findMany({
+    include: {
+      fasilitasWisata: true,
+    },
+  });
 
   try {
     if (id) {
-      // Fetch single wisata by id, including related fasilitas
+      // Fetch wisata by id, including related fasilitas
       const wisata = await prisma.wisata.findUnique({
         where: { id },
         include: {
@@ -27,30 +37,102 @@ export async function GET(req : NextRequest) {
 
       if (!wisata) {
         return NextResponse.json(
-          { error: "Wisata not found" },
+          { error: "Wisata tidak ditemukan" },
+          { status: 404 }
+        );
+      }
+      const data = { wisata: wisata, length: wisatas.length };
+      return NextResponse.json(data);
+    }
+
+    if (name) {
+      // Fetch wisata by name, including related fasilitas
+      const wisata = await prisma.wisata.findUnique({
+        where: { name },
+        include: {
+          fasilitasWisata: true,
+        },
+      });
+
+      if (!wisata) {
+        return NextResponse.json(
+          { error: "Wisata tidak ditemukan" },
+          { status: 404 }
+        );
+      }
+      const data = { wisata: wisata, length: wisatas.length };
+      return NextResponse.json(data);
+    }
+
+    if (page) {
+      if (search) {
+        const wisatasSearch = await prisma.wisata.findMany({
+          where: {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { description: { contains: search, mode: "insensitive" } },
+            ],
+          },
+        });
+
+        const wisatasSearchPaginate = await prisma.wisata.findMany({
+          skip: (parseInt(page) - 1) * (parseInt(pageSize) || 10),
+          take: parseInt(pageSize) || 10,
+          where: {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { description: { contains: search, mode: "insensitive" } },
+            ],
+          },
+          include: {
+            fasilitasWisata: true,
+          },
+        });
+
+        if (!wisatasSearch) {
+          return NextResponse.json(
+            { error: "Wisata tidak ditemukan" },
+            { status: 404 }
+          );
+        }
+
+        const data = {
+          wisata: wisatasSearchPaginate,
+          length: wisatasSearch.length,
+        };
+        return NextResponse.json(data);
+      }
+
+      const wisatasPage = await prisma.wisata.findMany({
+        skip: (parseInt(page) - 1) * (parseInt(pageSize) || 10),
+        take: parseInt(pageSize) || 10,
+        include: {
+          fasilitasWisata: true,
+        },
+      });
+
+      if (!wisatasPage) {
+        return NextResponse.json(
+          { error: "Wisata tidak ditemukan" },
           { status: 404 }
         );
       }
 
-      return NextResponse.json(wisata);
+      const data = { wisata: wisatasPage, length: wisatas.length };
+      return NextResponse.json(data);
     }
 
     // Fetch all wisata records, including related fasilitas
-    const wisatas = await prisma.wisata.findMany({
-      include: {
-        fasilitasWisata: true,
-      },
-    });
-
     return NextResponse.json(wisatas);
-  } catch (error : any) {
-    console.error("Error during GET wisatas:", error);
+  } catch (error: any) {
+    console.error("Terjadi kesalahan saat mengambil data wisata:", error);
     return NextResponse.json(
-      { error: "Something went wrong", details: error.message },
+      { error: "Terjadi kesalahan pada server", details: error.message },
       { status: 500 }
     );
   }
 }
+
 
 export async function POST(req : NextRequest) {
   const body = await req.json();

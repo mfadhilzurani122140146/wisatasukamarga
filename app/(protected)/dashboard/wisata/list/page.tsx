@@ -4,15 +4,22 @@ import { DataTable } from "./data-table-components/data-table";
 import { columns } from "./data-table-components/columns";
 import { useState, useEffect } from "react";
 
+
 export default function WisataListPage() {
   const [data, setData] = useState([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [search, setSearch] = useState("");
+  const [totalLength, setTotalLength] = useState(0);
 
   useEffect(() => {
     const fetchWisata = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const response = await fetch("/api/wisata", {
+        const response = await fetch(`/api/wisata?page=${page}&pageSize=${pageSize}&search=${search}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -23,13 +30,13 @@ export default function WisataListPage() {
           throw new Error("Failed to fetch Wisata data");
         }
 
-        const data = await response.json();
+        const result = await response.json();
 
-        if (!data || data.length === 0) {
+        if (!result || result.length === 0) {
           throw new Error("No Wisata data available.");
         }
-
-        setData(data);
+        setData(result.wisata);
+        setTotalLength(result.totalLength);
       } catch (err) {
         setError((err as Error).message || "Unknown error");
       } finally {
@@ -38,15 +45,11 @@ export default function WisataListPage() {
     };
 
     fetchWisata();
-  }, []);
+  }, [page, pageSize, search]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <div className="h-full flex-1 flex-col space-y-2 px-8 md:flex">
@@ -56,7 +59,19 @@ export default function WisataListPage() {
           Berikut adalah daftar data Wisata yang tersedia!
         </p>
       </div>
-      <DataTable data={data} columns={columns} />
+      <DataTable
+        data={data}
+        columns={columns}
+        isLoading={loading}
+        error={error}
+        page={page}
+        setPage={setPage}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        search={search}
+        setSearch={setSearch}
+        length={totalLength}
+      />
     </div>
   );
 }

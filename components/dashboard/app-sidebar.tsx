@@ -66,11 +66,11 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "Tambah Spot Wisata",
+          title: "Tambah Wisata",
           url: "/dashboard/wisata/create",
         },
         {
-          title: "Tambah Fasilitas Wisata",
+          title: "Tambah Daya Tarik",
           url: "/dashboard/wisata/create-fasilitas",
         },
         {

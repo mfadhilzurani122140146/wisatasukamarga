@@ -122,7 +122,6 @@ export default function WisataForm({
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Failed to submit wisata:", errorData);
         toast({
           title: "Gagal Mengirim Data",
           description: `Error: ${errorData.message || "Terjadi kesalahan."}`,
@@ -146,7 +145,6 @@ export default function WisataForm({
         window.location.replace("/dashboard/wisata/list");
       }, 2000);
     } catch (error) {
-      console.error("Error submitting wisata:", error);
       toast({
         title: "Gagal Mengirim Data",
         description: `Error: ${error}`,
@@ -307,7 +305,7 @@ export default function WisataForm({
             {/* Submit Button */}
             <div className="flex justify-end w-full">
               <Button type="submit" disabled={loading}>
-                {loading ? "Submitting..." : "Submit Wisata"}
+                {loading ? "Mengirimkan..." : "Simpan Wisata"}
               </Button>
             </div>
           </form>

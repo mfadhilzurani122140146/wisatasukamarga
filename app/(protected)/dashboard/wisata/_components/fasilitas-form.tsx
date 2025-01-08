@@ -69,15 +69,9 @@ export default function FasilitasForm({
       // Set the File in state
       setFile(file);
     } catch (error) {
-      console.error("Error converting image URL to file:", error);
     }
   };
 
-  useEffect(() => {
-    if (initialData.image) {
-      convertImageUrlToFile(initialData.image);
-    }
-  }, [initialData.image]);
 
   useEffect(() => {
     if (file) {
@@ -86,9 +80,9 @@ export default function FasilitasForm({
   }, [file]);
 
   const defaultValues = {
-    name: initialData?.fasilitasWisata.name || "",
+    name: initialData?.wisata.fasilitasWisata.name || "",
     FasilitasImage: file ? [file] : [],
-    description: initialData?.fasilitasWisata.description || "",
+    description: initialData?.wisata.fasilitasWisata.description || "",
     wisataId: initialData?.wisataId || "",
   };
 
@@ -123,7 +117,7 @@ export default function FasilitasForm({
         name: values.name,
         image: base64Image,
         description: values.description,
-        wisataId: initialData.id,
+        wisataId: initialData.wisata.id,
       };
 
       const response = await fetch("/api/fasilitas-wisata/change", {
@@ -136,7 +130,6 @@ export default function FasilitasForm({
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Failed to submit fasilitas wisata:", errorData);
         alert(errorData.error || "Failed to submit fasilitas wisata.");
         return;
       }
@@ -146,7 +139,6 @@ export default function FasilitasForm({
       alert("Fasilitas wisata created successfully!");
       form.reset();
     } catch (error) {
-      console.error("Error submitting fasilitas wisata:", error);
       alert("An error occurred while submitting the fasilitas wisata.");
     } finally {
       setLoading(false);
@@ -219,7 +211,7 @@ export default function FasilitasForm({
             {/* Submit Button */}
             <div className="flex justify-end w-full">
               <Button type="submit" disabled={loading}>
-                {loading ? "Submitting..." : "Submit Fasilitas"}
+                {loading ? "Mengirimkan..." : "Simpan Fasilitas"}
               </Button>
             </div>
           </form>

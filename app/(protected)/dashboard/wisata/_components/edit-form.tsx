@@ -137,7 +137,6 @@ export default function WisataEditForm({
           form.setValue("images", convertedFiles);
         }
       } catch (error) {
-        console.error("Error converting images to files:", error);
       }
     };
 
@@ -201,7 +200,6 @@ export default function WisataEditForm({
         router.push("/dashboard/wisata/list");
       }, 2000);
     } catch (error) {
-      console.error("Error updating wisata:", error);
       toast({
         title: "Gagal Memperbarui Data",
         description: `Error: ${error}`,
@@ -229,7 +227,7 @@ export default function WisataEditForm({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter wisata name" {...field} />
+                    <Input placeholder="Masukkan Nama Wisata..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -283,6 +281,21 @@ export default function WisataEditForm({
               )}
             />
 
+{/* Description */}
+<FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Deskripsi</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Masukkan Deskripsi..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="price"
@@ -292,7 +305,7 @@ export default function WisataEditForm({
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="Enter wisata price"
+                      placeholder="Masukkan Harga Tiket Masuk Wisata..."
                       {...field}
                     />
                   </FormControl>
@@ -308,7 +321,7 @@ export default function WisataEditForm({
                   <FormLabel>Location</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter wisata Google Maps link"
+                      placeholder="Masukkan Link Lokasi Google Maps..."
                       {...field}
                     />
                   </FormControl>
@@ -328,7 +341,7 @@ export default function WisataEditForm({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
+                        <SelectValue placeholder="Pilih Status Wisata Sekarang..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -343,7 +356,7 @@ export default function WisataEditForm({
             />
             <div className="flex justify-end w-full">
               <Button type="submit" disabled={loading}>
-                {loading ? "Updating..." : "Update Wisata"}
+                {loading ? "Memperbarui..." : "Perbarui Wisata"}
               </Button>
             </div>
           </form>

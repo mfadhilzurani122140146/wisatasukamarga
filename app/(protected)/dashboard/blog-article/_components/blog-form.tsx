@@ -82,7 +82,6 @@ export default function BlogForm({
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Failed to submit blog:", errorData);
         alert(errorData.error || "Failed to submit blog.");
         return;
       }
@@ -92,7 +91,6 @@ export default function BlogForm({
       alert("Blog created successfully!");
       form.reset(); // Reset form after successful submission
     } catch (error) {
-      console.error("Error submitting blog:", error);
       alert("An error occurred while submitting the blog.");
     } finally {
       setLoading(false);

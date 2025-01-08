@@ -62,7 +62,6 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
       // Optionally refresh data or perform navigation
       onClose();
     } catch (error) {
-      console.error("Error deleting Wisata:", error);
       alert("An error occurred while deleting the Wisata.");
     } finally {
       setLoading(false); // End loading state
@@ -99,8 +98,6 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleDelete}>
             Delete
