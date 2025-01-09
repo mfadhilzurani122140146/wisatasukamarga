@@ -4,7 +4,6 @@ import { DataTable } from "./data-table-components/data-table";
 import { columns } from "./data-table-components/columns";
 import { useState, useEffect } from "react";
 
-
 export default function WisataListPage() {
   const [data, setData] = useState([]);
   const [error, setError] = useState<string | null>(null);
@@ -19,12 +18,15 @@ export default function WisataListPage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/wisata?page=${page}&pageSize=${pageSize}&search=${search}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `/api/wisata?page=${page}&pageSize=${pageSize}&search=${search}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch Wisata data");
@@ -59,19 +61,8 @@ export default function WisataListPage() {
           Berikut adalah daftar data Wisata yang tersedia!
         </p>
       </div>
-      <DataTable
-        data={data}
-        columns={columns}
-        isLoading={loading}
-        error={error}
-        page={page}
-        setPage={setPage}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-        search={search}
-        setSearch={setSearch}
-        length={totalLength}
-      />
+
+      <DataTable data={data} columns={columns} isLoading={loading} />
     </div>
   );
 }

@@ -45,25 +45,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(data);
     }
 
-    if (name) {
-      // Fetch wisata by name, including related fasilitas
-      const wisata = await prisma.wisata.findUnique({
-        where: { name },
-        include: {
-          fasilitasWisata: true,
-        },
-      });
-
-      if (!wisata) {
-        return NextResponse.json(
-          { error: "Wisata tidak ditemukan" },
-          { status: 404 }
-        );
-      }
-      const data = { wisata: wisata, length: wisatas.length };
-      return NextResponse.json(data);
-    }
-
     if (page) {
       if (search) {
         const wisatasSearch = await prisma.wisata.findMany({
@@ -133,14 +114,31 @@ export async function GET(req: NextRequest) {
   }
 }
 
-
-export async function POST(req : NextRequest) {
+export async function POST(req: NextRequest) {
   const body = await req.json();
 
   try {
-    const { name, imageCover, description, price, location, status, image, fasilitasWisata } = body;
+    const {
+      name,
+      imageCover,
+      description,
+      price,
+      location,
+      status,
+      image,
+      fasilitasWisata,
+    } = body;
 
-    if (!name || !imageCover || !description || !price || !location || !status || !image || !image.length) {
+    if (
+      !name ||
+      !imageCover ||
+      !description ||
+      !price ||
+      !location ||
+      !status ||
+      !image ||
+      !image.length
+    ) {
       return NextResponse.json(
         { error: "All fields are required, including images" },
         { status: 400 }
@@ -162,10 +160,12 @@ export async function POST(req : NextRequest) {
     const imageCoverUrl = cloudinaryResponse.secure_url;
 
     const imageUrls = await Promise.all(
-      image.map(async (img : any, index : any) => {
+      image.map(async (img: any, index: any) => {
         const response = await cloudinary.uploader.upload(img, {
           folder: "wisata/images",
-          public_id: `${name.toLowerCase().replace(/\s+/g, "-")}-image-${index}`,
+          public_id: `${name
+            .toLowerCase()
+            .replace(/\s+/g, "-")}-image-${index}`,
         });
         return response.secure_url;
       })
@@ -181,7 +181,7 @@ export async function POST(req : NextRequest) {
         status,
         image: imageUrls,
         fasilitasWisata: {
-          create: fasilitasWisata?.map((fasilitas : any) => ({
+          create: fasilitasWisata?.map((fasilitas: any) => ({
             name: fasilitas.name,
             image: fasilitas.image,
             description: fasilitas.description,
@@ -191,7 +191,7 @@ export async function POST(req : NextRequest) {
     });
 
     return NextResponse.json(newWisata, { status: 201 });
-  } catch (error : any) {
+  } catch (error: any) {
     console.error("Error creating wisata:", error);
     return NextResponse.json(
       { error: "Failed to create wisata", details: error.message },
@@ -200,7 +200,7 @@ export async function POST(req : NextRequest) {
   }
 }
 
-export async function PUT(req : NextRequest) {
+export async function PUT(req: NextRequest) {
   const body = await req.json();
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
@@ -222,23 +222,30 @@ export async function PUT(req : NextRequest) {
     let imageCoverUrl = existingWisata.imageCover;
 
     if (body.imageCover && body.imageCover !== imageCoverUrl) {
-      const cloudinaryResponse = await cloudinary.uploader.upload(body.imageCover, {
-        folder: "wisata",
-        public_id: body.name.toLowerCase().replace(/\s+/g, "-"),
-      });
+      const cloudinaryResponse = await cloudinary.uploader.upload(
+        body.imageCover,
+        {
+          folder: "wisata",
+          public_id: body.name.toLowerCase().replace(/\s+/g, "-"),
+        }
+      );
 
       imageCoverUrl = cloudinaryResponse.secure_url;
     }
 
-    const imageUrls = body.image ? await Promise.all(
-      body.image.map(async (img : any, index : any) => {
-        const response = await cloudinary.uploader.upload(img, {
-          folder: "wisata/images",
-          public_id: `${body.name.toLowerCase().replace(/\s+/g, "-")}-image-${index}`,
-        });
-        return response.secure_url;
-      })
-    ) : existingWisata.image;
+    const imageUrls = body.image
+      ? await Promise.all(
+          body.image.map(async (img: any, index: any) => {
+            const response = await cloudinary.uploader.upload(img, {
+              folder: "wisata/images",
+              public_id: `${body.name
+                .toLowerCase()
+                .replace(/\s+/g, "-")}-image-${index}`,
+            });
+            return response.secure_url;
+          })
+        )
+      : existingWisata.image;
 
     const updatedWisata = await prisma.wisata.update({
       where: { id },
@@ -252,7 +259,7 @@ export async function PUT(req : NextRequest) {
         image: imageUrls,
         fasilitasWisata: {
           deleteMany: {},
-          create: body.fasilitasWisata?.map((fasilitas : any) => ({
+          create: body.fasilitasWisata?.map((fasilitas: any) => ({
             name: fasilitas.name,
             image: fasilitas.image,
             description: fasilitas.description,
@@ -265,7 +272,7 @@ export async function PUT(req : NextRequest) {
     });
 
     return NextResponse.json(updatedWisata);
-  } catch (error : any) {
+  } catch (error: any) {
     console.error("Error updating wisata:", error);
     return NextResponse.json(
       { error: "Failed to update wisata", details: error.message },
@@ -274,7 +281,7 @@ export async function PUT(req : NextRequest) {
   }
 }
 
-export async function DELETE(req : NextRequest) {
+export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 
@@ -288,7 +295,7 @@ export async function DELETE(req : NextRequest) {
     });
 
     return NextResponse.json({ message: "Wisata deleted successfully" });
-  } catch (error : any) {
+  } catch (error: any) {
     console.error("Error deleting wisata:", error);
     return NextResponse.json(
       { error: "Failed to delete wisata", details: error.message },

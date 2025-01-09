@@ -35,8 +35,8 @@ export const Header = ({
         "flex items-center justify-between gap-3 sm:gap-4 bg-transparent p-4 h-16 transition-[width,height] ease-linear",
         fixed && "header-fixed peer/header fixed z-50 rounded-md",
         state === "expanded"
-          ? "w-[calc(100%_-_16rem)]" // Lebar saat sidebar diperluas
-          : "w-[calc(100%_-_4rem)]", // Lebar saat sidebar dalam mode ikon
+          ? "w-[calc(100%_-_16rem)]"
+          : "w-[calc(100%_-_4rem)]",
         className
       )}
       {...props}
