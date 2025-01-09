@@ -36,7 +36,7 @@ export const columns: ColumnDef<Wisata>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="Nama wisata" />
     ),
     cell: ({ row }) => (
       <div className="w-[150px] font-medium capitalize">
@@ -47,10 +47,11 @@ export const columns: ColumnDef<Wisata>[] = [
   {
     accessorKey: "imageCover",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Image Cover" />
+      <DataTableColumnHeader column={column} title="Gambar Cover" />
     ),
     cell: ({ row }) => {
-      const imageCover = row.getValue("imageCover");
+      const imageCover = row.getValue("imageCover") as string;
+
       return (
         <div className="w-[48px] h-[48px]">
           {imageCover && (
@@ -69,13 +70,14 @@ export const columns: ColumnDef<Wisata>[] = [
   {
     accessorKey: "image",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Image" />
+      <DataTableColumnHeader column={column} title="Galeri" />
     ),
     cell: ({ row }) => {
-      const images = row.getValue("image");
+      const images = row.getValue("image") as string[];
+
       return (
         <div className="w-[48px] h-[48px]">
-          {images?.[0] && (
+          {images && (
             <Image
               src={images[0]}
               alt="Image"
@@ -91,7 +93,7 @@ export const columns: ColumnDef<Wisata>[] = [
   {
     accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
+      <DataTableColumnHeader column={column} title="Deskripsi" />
     ),
     cell: ({ row }) => (
       <div className="max-w-[300px] truncate">
@@ -102,7 +104,7 @@ export const columns: ColumnDef<Wisata>[] = [
   {
     accessorKey: "price",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Price" />
+      <DataTableColumnHeader column={column} title="Harga" />
     ),
     cell: ({ row }) => (
       <div className="w-[100px]">
@@ -116,7 +118,7 @@ export const columns: ColumnDef<Wisata>[] = [
   {
     accessorKey: "location",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Location" />
+      <DataTableColumnHeader column={column} title="Lokasi" />
     ),
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("location")}</div>
